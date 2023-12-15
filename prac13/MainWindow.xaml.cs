@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -12,15 +14,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace prac13
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    
     public partial class MainWindow : Window
     {
         public int[,] matrix;
@@ -30,11 +29,17 @@ namespace prac13
         {
             InitializeComponent();
             InitializeContextMenu();
-            gdProgram.Visibility = Visibility.Hidden;
-            gdLogin.Visibility = Visibility.Visible;
             Loaded += MainWindow_Loaded;
+
             // Добавление обработчика события к событию SelectedCellsChanged
             DGarray.SelectedCellsChanged += dataGrid_SelectedCellsChanged;
+        }
+        private void btnSettings_Click(object sender, RoutedEventArgs e)
+        {
+            // Создание и отображение окна настроек
+            SettingsWindow settingsWindow = new SettingsWindow();
+            settingsWindow.ShowDialog();
+            this.Close();
         }
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -45,24 +50,12 @@ namespace prac13
 
                 // Применение загруженного размера таблицы
                 int[,] matrix = new int[rows, columns];
+                visulaarray.Fill2Array(matrix);
+                DGarray.ItemsSource = visulaarray.ToDataTable(matrix).DefaultView;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка при загрузке настроек: {ex.Message}");
-            }
-        }
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
-        {
-            string password = tbPassword.Text;
-
-            if (password == "123")
-            {
-                gdProgram.Visibility = Visibility.Visible;
-                gdLogin.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                MessageBox.Show("Неверный пароль!");
             }
         }
         private void InitializeContextMenu()
@@ -85,7 +78,7 @@ namespace prac13
             clearRezItem.Header = "Очистить";
             clearRezItem.Click += ClearRezult_Click;
             // Назначаем контекстное меню блоку "Результат"
-            GRezult.ContextMenu = resultContextMenu;
+            GRezult.ContextMenu = resultContextMenu;           
         }
 
         private void ClearInputs_Click(object sender, RoutedEventArgs e)
@@ -93,7 +86,7 @@ namespace prac13
             // Очищаем значения текстовых полей блока "Исходные данные"
             tbRows.Text = "";
             tbColumn.Text = "";
-
+            
         }
         private void ClearRezult_Click(object sender, RoutedEventArgs e)
         {
@@ -182,7 +175,7 @@ namespace prac13
                 tbResult.Text = "Сумма чётных столбцов:\n" + string.Join("\n", columnSums);
             }
             else if (int.TryParse(tbRows.Text, out int rows) && int.TryParse(tbColumn.Text, out int columns))
-            {
+            { 
                 if (rows > 0 && columns > 0)
                 {
                     matrix = new int[rows, columns];
@@ -217,7 +210,7 @@ namespace prac13
         }
         private void btnExit_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Application.Current.Shutdown();
         }
 
         private void btnInfo_Click(object sender, RoutedEventArgs e)
@@ -237,6 +230,18 @@ namespace prac13
             // Обновление строки статуса
             tblStatus.Text = $"Размер таблицы: {rows}x{columns} | Выделенная ячейка: [{selectedRow + 1}, {selectedColumn + 1}]";
         }
-    }
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show("Вы действительно хотите выйти?", "", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
+            if (result == MessageBoxResult.Yes)
+            {
+                Application.Current.Shutdown();
+            }
+            else
+            {
+                e.Cancel = true;
+            }
+        }
+    }
 }

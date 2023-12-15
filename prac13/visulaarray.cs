@@ -128,10 +128,8 @@ namespace prac13
     {
         private static string configFilePath = "config.ini";
 
-        public static void SaveTableSize(int[,] matrixData)
+        public static void SaveTableSize(int rows, int columns)
         {
-            int rows = matrixData.GetLength(0);
-            int columns = matrixData.GetLength(1);
             try
             {
                 // Запись размера таблицы в файл конфигурации

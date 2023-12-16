@@ -34,12 +34,21 @@ namespace prac13
             // Добавление обработчика события к событию SelectedCellsChanged
             DGarray.SelectedCellsChanged += dataGrid_SelectedCellsChanged;
         }
+        
+        private void Window_Activated(object sender, EventArgs e)
+        {
+            tbColumn.Text = Data.ColumnCount.ToString();
+            tbRows.Text = Data.RowCount.ToString();
+            int[,] matrix = new int[Data.RowCount, Data.ColumnCount];
+            visulaarray.Fill2Array(matrix);
+            DGarray.ItemsSource = visulaarray.ToDataTable(matrix).DefaultView;
+        }
         private void btnSettings_Click(object sender, RoutedEventArgs e)
         {
             // Создание и отображение окна настроек
             SettingsWindow settingsWindow = new SettingsWindow();
             settingsWindow.ShowDialog();
-            this.Close();
+       
         }
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -47,7 +56,10 @@ namespace prac13
             {
                 // Загрузка размера таблицы из файла конфигурации
                 (int rows, int columns) = ConfigurationSettings.LoadTableSize();
-
+                Data.ColumnCount = columns;
+                Data.RowCount = rows;
+                tbColumn.Text = columns.ToString();
+                tbRows.Text = rows.ToString();
                 // Применение загруженного размера таблицы
                 int[,] matrix = new int[rows, columns];
                 visulaarray.Fill2Array(matrix);

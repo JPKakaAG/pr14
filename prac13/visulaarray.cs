@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -154,6 +155,8 @@ namespace prac13
 
                     if (sizes.Length == 2 && int.TryParse(sizes[0], out int rows) && int.TryParse(sizes[1], out int columns))
                     {
+                        Data.ColumnCount = columns;
+                        Data.RowCount = rows;
                         return (rows, columns);
                     }
                 }
@@ -166,5 +169,10 @@ namespace prac13
             // Если файл конфигурации не существует или настройки не удалось прочитать, возвращаем значения по умолчанию
             return (5, 5); // Пример значений по умолчанию
         }
+    }
+    public static class Data
+    {
+        public static int ColumnCount;
+        public static int RowCount;
     }
 }

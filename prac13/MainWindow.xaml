@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:prac13"
         mc:Ignorable="d"
         Title="Практическая №13" Height="450" Width="800" Icon="/FLGRUS.ICO"
-        Closing="Window_Closing">
+        Closing="Window_Closing"
+        Activated="Window_Activated">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="29*"/>

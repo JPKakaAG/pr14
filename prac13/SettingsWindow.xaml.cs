@@ -23,17 +23,22 @@ namespace prac13
         public SettingsWindow()
         {
             InitializeComponent();
+            tbColumns.Text = Convert.ToString(Data.ColumnCount);
+            tbRows.Text =  Convert.ToString(Data.RowCount);
         }      
         private void btnSaveSettings_Click(object sender, RoutedEventArgs e)
         {
+            
             // Чтение введенных значений из TextBox
             if (int.TryParse(tbRows.Text, out int rows) && int.TryParse(tbColumns.Text, out int columns))
             {
                 try
                 {
+                    Data.ColumnCount = columns;
+                    Data.RowCount = rows;
                     // Сохранение размера таблицы в файле конфигурации
                     ConfigurationSettings.SaveTableSize(rows, columns);
-                    MessageBox.Show("Настройки сохранены.");
+                    MessageBox.Show("Настройки сохранены.");                  
                 }
                 catch (Exception ex)
                 {
@@ -44,13 +49,6 @@ namespace prac13
             {
                 MessageBox.Show("Некорректные значения для размера таблицы!");
             }
-        }
-
-        private void btnReturn_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow mainWindow = new MainWindow();
-            mainWindow.Show();
-            this.Close();
         }
     }
 }
